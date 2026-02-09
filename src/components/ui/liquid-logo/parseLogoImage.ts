@@ -106,7 +106,7 @@ export function parseLogoImage(imageUrl: string): Promise<{ imageData: ImageData
               continue;
             }
             const sumN =
-              getU(x + 1, y, u) + getU(x - 1, y, u) + getU(x, y + 1, u) + getU(x, y - 1, u);
+              (getU(x + 1, y, u) ?? 0) + (getU(x - 1, y, u) ?? 0) + (getU(x, y + 1, u) ?? 0) + (getU(x, y - 1, u) ?? 0);
             newU[idx] = (C + sumN) / 4;
           }
         }
@@ -115,7 +115,7 @@ export function parseLogoImage(imageUrl: string): Promise<{ imageData: ImageData
 
       let maxVal = 0;
       for (let i = 0; i < width * height; i++) {
-        if (u[i] > maxVal) maxVal = u[i];
+        if ((u[i] ?? 0) > maxVal) maxVal = u[i] ?? 0;
       }
       const alpha = 2.0;
       const outImg = ctx.createImageData(width, height);
@@ -130,7 +130,7 @@ export function parseLogoImage(imageUrl: string): Promise<{ imageData: ImageData
             outImg.data[px + 2] = 255;
             outImg.data[px + 3] = 255;
           } else {
-            const raw = u[idx] / maxVal;
+            const raw = (u[idx] ?? 0) / maxVal;
             const remapped = raw ** alpha;
             const gray = 255 * (1 - remapped);
             outImg.data[px] = gray;
